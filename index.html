@@ -159,22 +159,19 @@ main{padding:24px 32px 80px;overflow-y:auto;max-width:1200px;margin:0 auto;width
     'llama-3b':  { id: 'Llama-3.2-3B-Instruct-q4f16_1-MLC',   size: '~2GB',   label: '3B · balanced · default · most laptops' },
     'qwen-7b':   { id: 'Qwen2.5-7B-Instruct-q4f16_1-MLC',     size: '~5GB',   label: '7B · capable · needs decent GPU (M-series Mac / 8GB+ VRAM)' },
     'llama-8b':  { id: 'Llama-3.1-8B-Instruct-q4f16_1-MLC',   size: '~5GB',   label: '8B · common · needs decent GPU' },
-    'llama-70b': { id: 'Llama-3.1-70B-Instruct-q4f16_1-MLC',  size: '~40GB',  label: '70B · frontier · needs serious GPU + 64GB+ RAM' },
-  };
+    'llama-70b': { id: 'Llama-3.1-70B-Instruct-q4f16_1-MLC',  size: '~40GB',  label: '70B · frontier · needs serious GPU + 64GB+ RAM' }};
   const DEFAULT_MODEL = 'llama-3b';
 
   const T3_PROVIDERS = {
     anthropic: { label: 'Anthropic Claude', models: ['claude-sonnet-4-5','claude-opus-4-7','claude-haiku-4-5'], default: 'claude-sonnet-4-5', url: 'https://api.anthropic.com/v1/messages' },
     openai:    { label: 'OpenAI',           models: ['gpt-4o','gpt-4o-mini','o1-mini'],                          default: 'gpt-4o-mini',      url: 'https://api.openai.com/v1/chat/completions' },
-    google:    { label: 'Google Gemini',    models: ['gemini-1.5-pro','gemini-1.5-flash','gemini-2.0-flash-exp'], default: 'gemini-1.5-flash', url: 'https://generativelanguage.googleapis.com/v1beta/models/' },
-  };
+    google:    { label: 'Google Gemini',    models: ['gemini-1.5-pro','gemini-1.5-flash','gemini-2.0-flash-exp'], default: 'gemini-1.5-flash', url: 'https://generativelanguage.googleapis.com/v1beta/models/' }};
 
   // ─── State ───────────────────────────────────────────────────────
   const STATE = {
     config: loadConfig(),
     ai: { ready: false, loading: false, progress: 0, engine: null, model: null },
-    mesh: { active: false, peers: new Map(), bc: null, signal: null },
-  };
+    mesh: { active: false, peers: new Map(), bc: null, signal: null }};
 
   function loadConfig() {
     try { return JSON.parse(localStorage.getItem('fall-kit.config') || '{}'); }
@@ -241,8 +238,7 @@ main{padding:24px 32px 80px;overflow-y:auto;max-width:1200px;margin:0 auto;width
     if (tier === 'T2' && STATE.ai.ready && STATE.ai.engine) {
       const r = await STATE.ai.engine.chat.completions.create({
         messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userMsg }],
-        max_tokens: maxTokens,
-      });
+        max_tokens: maxTokens});
       return r.choices[0].message.content;
     }
     if (tier === 'T3' && STATE.config.api_key && STATE.config.api_provider) {
@@ -259,8 +255,7 @@ main{padding:24px 32px 80px;overflow-y:auto;max-width:1200px;margin:0 auto;width
       const r = await fetch(T3_PROVIDERS.anthropic.url, {
         method: 'POST',
         headers: { 'content-type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model, max_tokens: maxTokens, system: sys, messages: [{ role: 'user', content: msg }] }),
-      });
+        body: JSON.stringify({ model, max_tokens: maxTokens, system: sys, messages: [{ role: 'user', content: msg }] })});
       if (!r.ok) throw new Error('Anthropic ' + r.status + ': ' + (await r.text()).slice(0, 200));
       const j = await r.json();
       return j.content[0].text;
@@ -269,8 +264,7 @@ main{padding:24px 32px 80px;overflow-y:auto;max-width:1200px;margin:0 auto;width
       const r = await fetch(T3_PROVIDERS.openai.url, {
         method: 'POST',
         headers: { 'content-type': 'application/json', 'Authorization': 'Bearer ' + key },
-        body: JSON.stringify({ model, max_tokens: maxTokens, messages: [{ role: 'system', content: sys }, { role: 'user', content: msg }] }),
-      });
+        body: JSON.stringify({ model, max_tokens: maxTokens, messages: [{ role: 'system', content: sys }, { role: 'user', content: msg }] })});
       if (!r.ok) throw new Error('OpenAI ' + r.status);
       const j = await r.json();
       return j.choices[0].message.content;
@@ -279,8 +273,7 @@ main{padding:24px 32px 80px;overflow-y:auto;max-width:1200px;margin:0 auto;width
       const r = await fetch(T3_PROVIDERS.google.url + model + ':generateContent?key=' + encodeURIComponent(key), {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: sys + '\n\n---\n\n' + msg }] }], generationConfig: { maxOutputTokens: maxTokens } }),
-      });
+        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: sys + '\n\n---\n\n' + msg }] }], generationConfig: { maxOutputTokens: maxTokens } })});
       if (!r.ok) throw new Error('Google ' + r.status);
       const j = await r.json();
       return j.candidates[0].content.parts[0].text;
@@ -521,8 +514,7 @@ main{padding:24px 32px 80px;overflow-y:auto;max-width:1200px;margin:0 auto;width
     openMint: openMint,  // v1.2 · launch kcc-mint with this seed prefilled as parent
     MODELS: WEBLLM_MODELS,
     PROVIDERS: T3_PROVIDERS,
-    state: STATE,
-  };
+    state: STATE};
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
@@ -588,7 +580,7 @@ const SEED_DEFAULT = {
  ],
  t0Rules: [
  { pattern: 'fca|cmr|cmcob', answer: 'FCA Claims Management Regulation since 1 Apr 2019. Threshold conditions; senior management arrangements; CMCOB conduct rules; pre-contract disclosure; cancellation rights; cooling-off period; financial promotions.' },
- { pattern: 'part 36|cpr 36|offer', answer: 'CPR Part 36 offers to settle. Relevant period ≥ 21 days. Cost consequences on judgment not at least as advantageous as offer (CPR 36.17): additional 10% on damages up to £500k + indemnity costs + enhanced interest.' },
+ { pattern: 'part 36|cpr 36|offer', answer: 'CPR Part 36 offers to settle. Relevant period ≥ 21 days. Cost consequences on judgment not at least as advantageous as offer (CPR 36.17): additional 10% on damages up to TBAk + indemnity costs + enhanced interest.' },
  { pattern: 'cfa|conditional fee|success fee', answer: 'CFA (LASPO 2013): no-win-no-fee. Success fee from client; not recoverable from defendant for new claims post-1 Apr 2013. PI success-fee cap 25% of past pecuniary losses + general damages (excluding future pec).' },
  { pattern: 'dba|damages.?based', answer: 'Damages-Based Agreement (DBA Regulations 2013): no-win-no-fee. Caps — 25% PI; 35% employment tribunal; 50% commercial. Indemnity principle: defendant pays the lower of DBA or assessed costs.' },
  { pattern: 'aml|mlr', answer: 'AML / MLR 2017: CDD on clients. Enhanced for PEPs / high-risk third countries. MLRO + SAR procedure.' },
@@ -597,7 +589,7 @@ const SEED_DEFAULT = {
  { pattern: 'solicitors act|sra', answer: 'Solicitors Act 1974: reserved legal activities. CMCs cannot provide reserved legal services (e.g. conduct of litigation, advocacy). Non-solicitor CMCs subject to FCA CMCOB.' },
  { pattern: 'limitation|time bar', answer: 'Limitation Act 1980: PI 3 years from accident or knowledge of injury (s.11); clinical negligence 3 years; industrial disease 3 years from knowledge; latent damage 6 yrs (s.14A) max 15 (s.14B); minors / patients suspended.' },
  { pattern: 'ate|after.?the.?event', answer: 'ATE Insurance: after-the-event insurance against adverse costs / disbursements. Premium no longer recoverable from defendant (LASPO 2013) except clinical negligence expert-fees portion and insolvency.' },
- { pattern: 'fixed costs|fcr|extended', answer: 'Fixed Recoverable Costs (FRC) extended October 2023: all civil cases £25k-£100k assigned to intermediate track; complexity bands 1-4 set predictable costs. Excludes housing disrepair, abuse.' },
+ { pattern: 'fixed costs|fcr|extended', answer: 'Fixed Recoverable Costs (FRC) extended October 2023: all civil cases TBA assigned to intermediate track; complexity bands 1-4 set predictable costs. Excludes housing disrepair, abuse.' },
  { pattern: 'vulnerab|fg21|fg21/1', answer: 'FCA FG21/1 vulnerable customers + CMCOB 2.2: identify drivers; adapt service; document; outcome monitor under Consumer Duty.' }
  ],
  complianceItems: [
@@ -694,7 +686,7 @@ const PROVIDERS = [
  model: 'claude-sonnet-4-20250514', requiresKey: true, paid: true, defaultEnabled: false, supportsStream: true,
  pricePer1MIn: 3, pricePer1MOut: 15,
  signupUrl: 'https://console.anthropic.com/',
- note: 'Sonnet 4: ~£0.03/tool · highest quality codegen' }
+ note: 'Sonnet 4: ~TBA/tool · highest quality codegen' }
 ];
 
 // ═══════════════════════════════════════════════════════════════
